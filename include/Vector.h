@@ -12,7 +12,7 @@ class Vector {
             x = 0;
             y = 0;
         }
-        Vector(const int& new_x, const int& new_y) {
+        Vector(const double& new_x, const double& new_y) {
             x = new_x;
             y = new_y;
         }
@@ -24,7 +24,7 @@ class Vector {
         /*Vector getValue() const {
 
         }*/
-        void setValue(const int& new_x, const int& new_y) {
+        void setValue(const double& new_x, const double& new_y) {
             x = new_x;
             y = new_y;
         }
@@ -32,6 +32,14 @@ class Vector {
         Vector operator+ (const Vector& another) const {
             Vector tmp;
             tmp.x = x + another.x;
+            tmp.y = y + another.y;
+            return tmp;
+        }
+
+        friend Vector operator* (const double& a, const Vector& v);
+
+        Vector operator- (const Vector& another) const {
+            return *this + (-1)*another;
         }
 
         void printCoordinates () {
@@ -39,9 +47,16 @@ class Vector {
         }
 
     protected:
-        int x;
-        int y;
+        double x;
+        double y;
     private:
 };
+
+Vector operator* (const double& a, const Vector& v) {
+    Vector tmp;
+    tmp.x = v.x * a;
+    tmp.y = v.y * a;
+    return tmp;
+}
 
 #endif // VECTOR_H
