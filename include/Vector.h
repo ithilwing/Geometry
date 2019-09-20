@@ -41,11 +41,15 @@ class Vector {
             return tmp;
         }
 
-        double getAbsValue () const {
+        double getLength () const {
             return sqrt(x*x + y*y);
         }
 
         friend Vector operator* (const double& a, const Vector& v);
+
+        double getScalarMult (const Vector& another) const {
+            return (x*another.x + y*another.y);
+        }
 
         Vector operator- (const Vector& another) const {
             return *this + (-1)*another;
