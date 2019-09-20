@@ -3,6 +3,8 @@
 #include <string>
 
 #include "Vector.h"
+#include "Segment.h"
+
 
 int main(int argc, char **argv) {
 
@@ -15,6 +17,12 @@ int main(int argc, char **argv) {
     my_vector.printCoordinates();
     new_vector.printCoordinates();
     copied_vector.printCoordinates();
+
+    std::cout << my_vector.getAbsValue() << std::endl;
+
+    Segment my_segment (my_vector, new_vector);
+    my_segment.printCoordinates();
+
 
     return 0;
 }

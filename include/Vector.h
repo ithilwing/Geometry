@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <string>
+#include <math.h>
 
 class Vector {
     public:
@@ -21,9 +22,13 @@ class Vector {
             y = new_vector.y;
         }
 
-        /*Vector getValue() const {
+        double getX() const {
+            return x;
+        }
 
-        }*/
+        double getY() const {
+            return y;
+        }
         void setValue(const double& new_x, const double& new_y) {
             x = new_x;
             y = new_y;
@@ -34,6 +39,10 @@ class Vector {
             tmp.x = x + another.x;
             tmp.y = y + another.y;
             return tmp;
+        }
+
+        double getAbsValue () const {
+            return sqrt(x*x + y*y);
         }
 
         friend Vector operator* (const double& a, const Vector& v);
