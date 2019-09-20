@@ -8,40 +8,39 @@
 
 class Vector {
     public:
-        Vector();
-        Vector(const int& newBegin_x, const int& newBegin_y, const int& newEnd_x, const int& newEnd_y) {
-            Begin_x = newBegin_x;
-            Begin_y = newBegin_y;
-            End_x = newEnd_x;
-            End_y = newEnd_y;
+        Vector() {
+            x = 0;
+            y = 0;
+        }
+        Vector(const int& new_x, const int& new_y) {
+            x = new_x;
+            y = new_y;
         }
         Vector(const Vector& new_vector) {
-            Begin_x = new_vector.Begin_x;
-            Begin_y = new_vector.Begin_y;
-            End_x = new_vector.End_x;
-            End_y = new_vector.End_y;
+            x = new_vector.x;
+            y = new_vector.y;
         }
-        ~Vector();
 
         /*Vector getValue() const {
 
         }*/
-        void setValue(const int& newBegin_x, const int& newBegin_y, const int& newEnd_x, const int& newEnd_y) {
-            Begin_x = newBegin_x;
-            Begin_y = newBegin_y;
-            End_x = newEnd_x;
-            End_y = newEnd_y;
+        void setValue(const int& new_x, const int& new_y) {
+            x = new_x;
+            y = new_y;
+        }
+
+        Vector operator+ (const Vector& another) const {
+            Vector tmp;
+            tmp.x = x + another.x;
         }
 
         void printCoordinates () {
-            std::cout << "(" << Begin_x << ", " << Begin_y << "), (" << End_x << ", " << End_y << ")" << std::endl;
+            std::cout << "(" << x << ", " << y << ")" << std::endl;
         }
 
     protected:
-        int Begin_x;
-        int Begin_y;
-        int End_x;
-        int End_y;
+        int x;
+        int y;
     private:
 };
 
