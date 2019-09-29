@@ -10,7 +10,6 @@ class Line
     protected:
         Vector<T> point;
         Vector<T> direction;
-    private:
 };
 
 #endif // LINE_H
