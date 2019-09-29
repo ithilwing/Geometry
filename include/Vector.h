@@ -1,4 +1,3 @@
-
 #ifndef VECTOR_H
 #define VECTOR_H
 
@@ -18,8 +17,12 @@ class Vector {
 
         void setValue(const double& new_x, const double& new_y);
 
-        Vector<T> operator+ (const Vector<T>& another) const;
-        Vector<T> operator- (const Vector<T>& another) const;
+        Vector<T> operator+ () const;
+        Vector<T> operator- () const;
+
+        Vector<T> operator+= (const Vector<T>& another);
+        Vector<T> operator-= (const Vector<T>& another);
+
 
         template <class V>
         friend Vector<V> operator* (const double& a, const Vector<V>& v);
@@ -69,11 +72,31 @@ void Vector<T>::setValue(const double& new_x, const double& new_y) {
 }
 
 template <class T>
-Vector<T> Vector<T>::operator+ (const Vector<T>& another) const {
-    Vector<T> tmp;
-    tmp.x = x + another.x;
-    tmp.y = y + another.y;
-    return tmp;
+Vector<T> Vector<T>::operator+ () const {
+    return *this;
+}
+
+template <class T>
+Vector<T> Vector<T>::operator- () const {
+    return -1*(*this);
+}
+
+template <class T>
+Vector<T> Vector<T>::operator+= (const Vector<T>& another) {
+    setValue(x+another.x, y+another.y);
+    return *this;
+}
+
+template <class T>
+Vector<T> Vector<T>::operator-= (const Vector<T>& another) {
+    setValue(x-another.x, y-another.y);
+    return *this;
+}
+
+template <class T>
+Vector<T> operator+ (const Vector<T>& a, const Vector<T>& b){
+    Vector<T> tmp = a;
+    return tmp+=b;
 }
 
 template <class T>
@@ -94,10 +117,6 @@ double Vector<T>::getScalarMult (const Vector<T>& another) const {
     return (x*another.x + y*another.y);
 }
 
-template <class T>
-Vector<T> Vector<T>::operator- (const Vector<T>& another) const {
-    return (*this + (-1)*another);
-}
 
 template <class T>
 bool Vector<T>::operator== (const Vector<T>& another) const {

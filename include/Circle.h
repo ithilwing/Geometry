@@ -1,4 +1,3 @@
-
 #ifndef  CIRCLE_H
 #define  CIRCLE_H
 
@@ -21,4 +20,4 @@ Circle<T>::Circle(const Vector<T>& p, const Vector<T>& r) {
     radius = r.getLength();
 }
 
-#endif //  CIRCLE_
+#endif //  CIRCLE_H

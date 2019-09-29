@@ -1,4 +1,3 @@
-
 #ifndef SEGMENT_H
 #define SEGMENT_H
 
@@ -42,11 +41,11 @@ void Segment<T>::printCoordinates () {
     std::cout << "(" << one.getX() << ", " << one.getY() << "), (" << two.getX() << ", " << two.getY() << ")" << std::endl;
 }
 
-template <class T>
+/*template <class T>
 double Segment<T>::getLength () {
     Vector<T> tmp;
     tmp = two - one;
     return tmp.getLength();
-}
+}*/
 
 #endif // SEGMENT_H
