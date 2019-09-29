@@ -9,35 +9,32 @@ template <class T>
 class Vector {
     public:
         Vector();
-        Vector(const double& new_x, const double& new_y);
-        Vector(const Vector<T>& new_vector);
+        Vector(const T& new_x, const T& new_y);
+        Vector(Vector<T> const& new_vector);
 
-        double getX() const;
-        double getY() const;
+        T getX() const;
+        T getY() const;
 
-        void setValue(const double& new_x, const double& new_y);
+        void setValue(const T& new_x, const T& new_y);
 
-        Vector<T> operator+ () const;
-        Vector<T> operator- () const;
+        Vector<T> operator+ () const; //unary
+        Vector<T> operator- () const; //unary
 
         Vector<T> operator+= (const Vector<T>& another);
         Vector<T> operator-= (const Vector<T>& another);
+        Vector<T> operator*= (const T& a);
 
-
-        template <class V>
-        friend Vector<V> operator* (const double& a, const Vector<V>& v);
-
-        double getLength () const;
-        double getScalarMult (const Vector<T>& another) const;
+        T getLength () const;
+        T getScalarMult (const Vector<T>& another) const;
 
         bool operator== (const Vector<T>& another) const;
         bool operator!= (const Vector<T>& another) const;
 
-        void printCoordinates ();
+//        void printCoordinates ();
 
     protected:
-        double x;
-        double y;
+        T x;
+        T y;
 };
 
 template <class T>
@@ -46,40 +43,37 @@ Vector<T>::Vector() {
 }
 
 template <class T>
-Vector<T>::Vector(const double& new_x, const double& new_y) {
-    setValue(new_x, new_y);
-}
+Vector<T>::Vector(const T& new_x, const T& new_y): x(new_x), y(new_y) {}
 
 template <class T>
-Vector<T>::Vector(const Vector<T>& new_vector) {
-    setValue(new_vector.x, new_vector.y);
-}
+Vector<T>::Vector(const Vector<T>& new_vector): x(new_vector.x), y(new_vector.y) {}
 
 template <class T>
-double Vector<T>::getX() const {
+T Vector<T>::getX() const {
     return x;
 }
 
 template <class T>
-double Vector<T>::getY() const {
+T Vector<T>::getY() const {
     return y;
 }
 
 template <class T>
-void Vector<T>::setValue(const double& new_x, const double& new_y) {
+void Vector<T>::setValue(const T& new_x, const T& new_y) {
     x = new_x;
     y = new_y;
 }
 
 template <class T>
-Vector<T> Vector<T>::operator+ () const {
+Vector<T> Vector<T>::operator+ () const { //unary
     return *this;
 }
 
 template <class T>
-Vector<T> Vector<T>::operator- () const {
+Vector<T> Vector<T>::operator- () const { //unary
     return -1*(*this);
 }
+
 
 template <class T>
 Vector<T> Vector<T>::operator+= (const Vector<T>& another) {
@@ -93,54 +87,62 @@ Vector<T> Vector<T>::operator-= (const Vector<T>& another) {
     return *this;
 }
 
+
 template <class T>
-Vector<T> operator+ (const Vector<T>& a, const Vector<T>& b){
+Vector<T> Vector<T>::operator*= (const T& a){
+    setValue(x*a, y*a);
+    return *this;
+}
+
+template <class T>
+Vector<T> operator+ (const Vector<T>& a, const Vector<T>& b){ //binary
     Vector<T> tmp = a;
     return tmp+=b;
 }
 
 template <class T>
-double Vector<T>::getLength () const {
+Vector<T> operator- (const Vector<T>& a, const Vector<T>& b){ //binary
+    Vector<T> tmp = a;
+    return tmp-=b;
+}
+
+template <class T>
+Vector<T> operator* (const T& a, const Vector<T>& v){
+    Vector<T> tmp = v;
+    return tmp*=a;
+}
+
+template <class T>
+Vector<T> operator* (const Vector<T>& v, const T& a){
+    return a*v;
+}
+
+template <class T>
+T Vector<T>::getLength () const {
     return sqrt(x*x + y*y);
 }
 
-template <class T>
-Vector<T> operator* (const double& a, const Vector<T>& v) {
-    Vector<T> tmp;
-    tmp.x = v.x * a;
-    tmp.y = v.y * a;
-    return tmp;
-}
 
 template <class T>
-double Vector<T>::getScalarMult (const Vector<T>& another) const {
+T Vector<T>::getScalarMult (const Vector<T>& another) const {
     return (x*another.x + y*another.y);
 }
 
 
 template <class T>
 bool Vector<T>::operator== (const Vector<T>& another) const {
-    if (another.x == x && another.y == y) {
-        return true;
-    }
-    else {
-        return false;
-    }
+    return (another.x == x && another.y == y);
 }
 
 template <class T>
 bool Vector<T>::operator!= (const Vector<T>& another) const {
-    if (another.x == x && another.y == y) {
-        return false;
-    }
-    else {
-        return true;
-    }
+    return !(*this == another);
 }
 
 template <class T>
-void Vector<T>::printCoordinates () {
-    std::cout << "(" << x << ", " << y << ")" << std::endl;
+std::ostream& operator << (std::ostream& os, const Vector<T>& output) {
+    os << "(" << output.getX() << ", " << output.getY() << ")" ;
+    return os;
 }
 
 #endif // VECTOR_H
