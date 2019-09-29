@@ -1,17 +1,16 @@
-#pragma once
 
 #ifndef LINE_H
 #define LINE_H
 
-
+template <class T>
 class Line
 {
     public:
         Line() {}
 
     protected:
-        Vector point;
-        Vector direction;
+        Vector<T> point;
+        Vector<T> direction;
     private:
 };
 
