@@ -38,6 +38,18 @@ class Vector {
 };
 
 template <class T>
+Vector<T> operator+ (const Vector<T>& a, const Vector<T>& b);
+
+template <class T>
+Vector<T> operator- (const Vector<T>& a, const Vector<T>& b);
+
+template <class T>
+Vector<T> operator* (const T& a, const Vector<T>& v);
+
+template <class T>
+Vector<T> operator* (const Vector<T>& v, const T& a);
+
+template <class T>
 Vector<T>::Vector() {
     setValue (0, 0);
 }
