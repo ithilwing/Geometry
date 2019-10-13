@@ -1,8 +1,11 @@
 #ifndef LINE_H
 #define LINE_H
 
+
+#include "Shape.h"
+
 template <class T>
-class Line
+class Line : public Shape<T>
 {
     public:
         Line() {}

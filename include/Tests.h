@@ -5,6 +5,7 @@
 #include "Segment.h"
 #include "Circle.h"
 #include "Line.h"
+#include "Shape.h"
 
 
 class Tests
@@ -123,6 +124,21 @@ void Tests::TestSegmentIntersection() {
     Segment<double> seven(3,3,6,1);
     Segment<double> eight(3,1,6,3);
     Segment<double> nine(1.5,0,4.5,2);
+    Segment<double> ten(2,0,2,1);
+    assert((*dynamic_cast<NullShape<double>*>(GetIntersection(two,one))) == NullShape<double>()); //делаем из указателя на shape(getIntersection) укказатель на nullShape
+    assert((*dynamic_cast<Vector<double>*>(GetIntersection(six,one))) == Vector<double>(2,3));
+    assert((*dynamic_cast<Vector<double>*>(GetIntersection(two,three))) == Vector<double>(2,2));
+    assert((*dynamic_cast<Segment<double>*>(GetIntersection(three,four))) == Segment<double>(1.5,1.5,2.5,2.5));
+    assert((*dynamic_cast<Vector<double>*>(GetIntersection(two,four))) == Vector<double>(2,2));
+    assert((*dynamic_cast<Vector<double>*>(GetIntersection(two,six))) == Vector<double>(2,2));
+    assert((*dynamic_cast<Vector<double>*>(GetIntersection(three,six))) == Vector<double>(2,2));
+    assert((*dynamic_cast<Segment<double>*>(GetIntersection(five,six))) == Segment<double>(2,1,2,1.5));
+    assert((*dynamic_cast<Vector<double>*>(GetIntersection(two,eight))) == Vector<double>(3.0,1.0));
+    assert((*dynamic_cast<Vector<double>*>(GetIntersection(three,seven))) == Vector<double>(3,3));
+    assert((*dynamic_cast<Vector<double>*>(GetIntersection(seven,eight))) == Vector<double>(4.5,2));
+    assert((*dynamic_cast<Segment<double>*>(GetIntersection(eight,nine))) == Segment<double>(3,1,4.5,2)); //память освобожу позжу
+
+    std::cout << "All tests on sector intersections passed successfully!" << std::endl;
 
 }
 

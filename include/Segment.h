@@ -7,9 +7,10 @@
 #include <string>
 
 #include "Vector.h"
+#include "Shape.h"
 
 template <class T>
-class Segment
+class Segment : public Shape<T>
 {
     public:
         Segment();
@@ -23,8 +24,12 @@ class Segment
 
         T getLength () const; // what if sqrt cannot accept T ?
 
-        template <class V>
-        friend std::ostream &operator << (std::ostream &os, const Segment<V> &output);
+        bool operator== (const Segment<T>& another) const;
+
+        std::string toString() const;
+
+       /* template <class V>
+        friend std::ostream &operator << (std::ostream &os, const Segment<V> &output);*/
 
 
     protected:
@@ -33,7 +38,7 @@ class Segment
 };
 
 template <class T>
-bool CheckIfIntersect (const Segment<T>& a, const Segment<T>& b);
+Shape<T>* GetIntersection (const Segment<T>& a, const Segment<T>& b);
 
 template <class T>
 Segment<T>::Segment() {
@@ -73,12 +78,16 @@ T Segment<T>::getTwoY() const {
     return two.getY();
 }
 
-
 template <class T>
+std::string Segment<T>::toString () const {
+    return  one.toString() + ", " + two.toString();
+}
+
+/*template <class T>
 std::ostream& operator << (std::ostream& os, const Segment<T>& output) {
     os << output.one << ", " << output.two ;
     return os;
-}
+}*/
 
 template <class T>
 T Segment<T>::getLength () const {
@@ -88,7 +97,22 @@ T Segment<T>::getLength () const {
 }
 
 template <class T>
-bool CheckIfIntersect (const Segment<T>& a, const Segment<T>& b){
+bool Segment<T>::operator== (const Segment<T>& another) const {
+    return (another.one == one && another.two == two);
+}
+
+template <class T>
+bool le (const T& a, const T& b) { //a<=b
+    return (a<b || std::abs(a-b)<EPS);
+}
+
+template <class T>
+bool ge (const T& a, const T& b) { // a>=b
+    return (a>b || std::abs(a-b)<EPS);
+}
+
+template <class T>
+Shape<T>* GetIntersection (const Segment<T>& a, const Segment<T>& b){
 
     //initialize coordinates
     T x1a = a.getOneX();
@@ -125,13 +149,10 @@ bool CheckIfIntersect (const Segment<T>& a, const Segment<T>& b){
     //check if both segments are vertical
     if (x2a == x1a && x2b == x1b) {
         if (x1a != x1b) {
-            std::cout << a << " and " << b << ": " << "No intersection" << std::endl;
-            return false;
+            //std::cout << a << " and " << b << ": " << "No intersection" << std::endl;
+            return new NullShape<T> ();
         } else {
-            if (CaseParallel(a,b) == true)
-                return true;
-            else
-                return false;
+            return CaseParallel(a,b);
         }
     }
 
@@ -141,12 +162,13 @@ bool CheckIfIntersect (const Segment<T>& a, const Segment<T>& b){
         T Bb = y1b - Ab*x1b;
         T y = Ab*x1a + Bb;
         T x = x1a;
-        if (std::min(x1a,x2a)<=x && x<=std::max(x1a,x2a) && std::min(y1a,y2a)<=y && y<=std::max(y1a,y2a) && std::min(x1b,x2b)<=x && x<=std::max(x1b,x2b) && std::min(y1b,y2b)<=y && y<=std::max(y1b,y2b)) {
-            std::cout << a << " and " << b << ": " << "Intersection point: (" << x << ", " << y << ")" << std::endl;
-            return true;
+        if (le(std::min(x1a,x2a),x) && le(x,std::max(x1a,x2a)) && le(std::min(y1a,y2a),y) && le(y,std::max(y1a,y2a))
+            && le(std::min(x1b,x2b),x) && le(x,std::max(x1b,x2b)) && le(std::min(y1b,y2b),y) && le(y,std::max(y1b,y2b))) {
+            //std::cout << a << " and " << b << ": " << "Intersection point: (" << x << ", " << y << ")" << std::endl;
+            return new Vector<T> (x,y);
         } else {
-            std::cout << a << " and " << b << ": " << "No intersection" << std::endl;
-            return false;
+            //std::cout << a << " and " << b << ": " << "No intersection" << std::endl;
+            return new NullShape<T> ();
         }
 
     }
@@ -157,12 +179,13 @@ bool CheckIfIntersect (const Segment<T>& a, const Segment<T>& b){
         T Ba = y1a - Aa*x1a;
         T y = Aa*x1b + Ba;
         T x = x1b;
-        if (std::min(x1a,x2a)<=x && x<=std::max(x1a,x2a) && std::min(y1a,y2a)<=y && y<=std::max(y1a,y2a) && std::min(x1b,x2b)<=x && x<=std::max(x1b,x2b) && std::min(y1b,y2b)<=y && y<=std::max(y1b,y2b)) {
-            std::cout << a << " and " << b << ": " << "Intersection point: (" << x << ", " << y << ")" << std::endl;
-            return true;
+        if (le(std::min(x1a,x2a),x) && le(x,std::max(x1a,x2a)) && le(std::min(y1a,y2a),y) && le(y,std::max(y1a,y2a))
+             && le(std::min(x1b,x2b),x) && le(x,std::max(x1b,x2b)) && le(std::min(y1b,y2b),y) && le(y,std::max(y1b,y2b))) {
+            //std::cout << a << " and " << b << ": " << "Intersection point: (" << x << ", " << y << ")" << std::endl;
+            return new Vector<T> (x,y);
         } else {
-            std::cout << a << " and " << b << ": " << "No intersection" << std::endl;
-            return false;
+            //std::cout << a << " and " << b << ": " << "No intersection" << std::endl;
+            return new NullShape<T> ();
         }
 
     }
@@ -178,13 +201,10 @@ bool CheckIfIntersect (const Segment<T>& a, const Segment<T>& b){
     //check if segments are parallel
     if (Aa == Ab) {
         if (Ba != Bb) {
-            std::cout << a << " and " << b << ": " << "No intersection" << std::endl;
-            return false;
+            //std::cout << a << " and " << b << ": " << "No intersection" << std::endl;
+            return new NullShape<T> ();
         } else {
-            if (CaseParallel(a,b) == true)
-                return true;
-            else
-                return false;
+            return CaseParallel(a,b);
         }
     }
 
@@ -192,18 +212,19 @@ bool CheckIfIntersect (const Segment<T>& a, const Segment<T>& b){
     T x = (Bb - Ba)/(Aa - Ab);
     T y = Aa*x + Ba;
 
-    if (std::min(x1a,x2a)<=x && x<=std::max(x1a,x2a) && std::min(y1a,y2a)<=y && y<=std::max(y1a,y2a) && std::min(x1b,x2b)<=x && x<=std::max(x1b,x2b) && std::min(y1b,y2b)<=y && y<=std::max(y1b,y2b)) {
-        std::cout << a << " and " << b << ": " << "Intersection point: (" << x << ", " << y << ")" << std::endl;
-        return true;
+    if (le(std::min(x1a,x2a),x) && le(x,std::max(x1a,x2a)) && le(std::min(y1a,y2a),y) && le(y,std::max(y1a,y2a)) &&
+         le(std::min(x1b,x2b),x) && le(x,std::max(x1b,x2b)) && le(std::min(y1b,y2b),y) && le(y,std::max(y1b,y2b))) {
+        //std::cout << a << " and " << b << ": " << "Intersection point: (" << x << ", " << y << ")" << std::endl;
+        return new Vector<T> (x,y);
     } else {
-        std::cout << a << " and " << b << ": " << "No intersection" << std::endl;
-        return false;
+        //std::cout << a << " and " << b << ": " << "No intersection" << std::endl;
+        return new NullShape<T> ();
     }
 
 }
 
 template <class T>
-bool CaseParallel (const Segment<T>& a, const Segment<T>& b) {
+Shape<T>* CaseParallel (const Segment<T>& a, const Segment<T>& b) {
     T x1a = a.getOneX();
     T x2a = a.getTwoX();
     T y1a = a.getOneY();
@@ -215,45 +236,46 @@ bool CaseParallel (const Segment<T>& a, const Segment<T>& b) {
     T y2b = b.getTwoY();
 
     if (std::max(y1a, y2a) < std::min(y1b, y2b) || std::max(y1b, y2b) < std::min(y1a, y2a)) {
-        std::cout << a << " and " << b << ": " << "No intersection" << std::endl;
-        return false;
+        //std::cout << a << " and " << b << ": " << "No intersection" << std::endl;
+        return new NullShape<T> ();
     } else if (std::max(y1a, y2a) == std::min(y1b, y2b)) {
-        std::cout << a << " and " << b << ": " << "Intersection point: (" << x1a << ", " << std::max(y1a, y2a) << ")" << std::endl;
-        return true;
+        //std::cout << a << " and " << b << ": " << "Intersection point: (" << x1a << ", " << std::max(y1a, y2a) << ")" << std::endl;
+        return new Vector<T> (x1a,std::max(y1a, y2a));
     } else if (std::max(y1b, y2b) == std::min(y1a, y2a)) {
-        std::cout << a << " and " << b << ": " << "Intersection point: (" << x1a << ", " << std::max(y1b, y2b) << ")" << std::endl;
-        return true;
+        //std::cout << a << " and " << b << ": " << "Intersection point: (" << x1a << ", " << std::max(y1b, y2b) << ")" << std::endl;
+        return new Vector<T> (x1a,std::max(y1b, y2b));
     }
     if (a.getLength()>=b.getLength()) {
         if (std::min(y1b, y2b) < std::max(y1a, y2a) && std::max(y1b,y2b) >= std::max(y1a, y2a)) {
-            Segment<T> intersection(x1b, std::min(y1b,y2b), x2a, std::max(y1a,y2a));
-            std::cout << a << " and " << b << ": " << "Intersection segment: " << intersection << std::endl;
-            return true;
+            //Segment<T> intersection(x1b, std::min(y1b,y2b), x2a, std::max(y1a,y2a));
+            //std::cout << a << " and " << b << ": " << "Intersection segment: " << intersection << std::endl;
+            return new Segment<T> (x1b, std::min(y1b,y2b), x2a, std::max(y1a,y2a));
         } else if (std::min(y1b, y2b) > std::min(y1a, y2a) && std::max(y1b,y2b) < std::max(y1a, y2a)) {
-            Segment<T> intersection(x1b, std::min(y1b,y2b), x2b, std::max(y1b,y2b));
-            std::cout << a << " and " << b << ": " << "Intersection segment: " << intersection << std::endl;
-            return true;
+            //Segment<T> intersection(x1b, std::min(y1b,y2b), x2b, std::max(y1b,y2b));
+            //std::cout << a << " and " << b << ": " << "Intersection segment: " << intersection << std::endl;
+            return new Segment<T> (x1b, std::min(y1b,y2b), x2b, std::max(y1b,y2b));
         } else if (std::min(y1b,y2b)<=std::min(y1a,y2a) && std::max(y1b,y2b)>std::min(y1a,y2a)) {
-            Segment<T> intersection(x1a, std::min(y1a,y2a), x2b, std::max(y1b,y2b));
-            std::cout << a << " and " << b << ": " << "Intersection segment: " << intersection << std::endl;
-            return true;
+            //Segment<T> intersection(x1a, std::min(y1a,y2a), x2b, std::max(y1b,y2b));
+            //std::cout << a << " and " << b << ": " << "Intersection segment: " << intersection << std::endl;
+            return new Segment<T> (x1a, std::min(y1a,y2a), x2b, std::max(y1b,y2b));
         }
     } else {
         if (std::min(y1a, y2a) < std::max(y1b, y2b) && std::max(y1a,y2a) >= std::max(y1b, y2b)) {
-            Segment<T> intersection(x1a, std::min(y1a,y2a), x2b, std::max(y1b,y2b));
-            std::cout << a << " and " << b << ": " << "Intersection segment: " << intersection << std::endl;
-            return true;
+            //Segment<T> intersection(x1a, std::min(y1a,y2a), x2b, std::max(y1b,y2b));
+            //std::cout << a << " and " << b << ": " << "Intersection segment: " << intersection << std::endl;
+            return new Segment<T> (x1a, std::min(y1a,y2a), x2b, std::max(y1b,y2b));
         } else if (std::min(y1a, y2a) > std::min(y1b, y2b) && std::max(y1a,y2a) < std::max(y1b, y2b)) {
-            Segment<T> intersection(x1a, std::min(y1a,y2a), x2a, std::max(y1a,y2a));
-            std::cout << a << " and " << b << ": " << "Intersection segment: " << intersection << std::endl;
-            return true;
+            //Segment<T> intersection(x1a, std::min(y1a,y2a), x2a, std::max(y1a,y2a));
+            //std::cout << a << " and " << b << ": " << "Intersection segment: " << intersection << std::endl;
+            return new Segment<T> (x1a, std::min(y1a,y2a), x2a, std::max(y1a,y2a));
         } else if (std::min(y1a,y2a)<=std::min(y1b,y2b) && std::max(y1a,y2a)>std::min(y1b,y2b)) {
-            Segment<T> intersection(x1b, std::min(y1b,y2b), x2a, std::max(y1a,y2a));
-            std::cout << a << " and " << b << ": " << "Intersection segment: " << intersection << std::endl;
-            return true;
+            //Segment<T> intersection(x1b, std::min(y1b,y2b), x2a, std::max(y1a,y2a));
+            //std::cout << a << " and " << b << ": " << "Intersection segment: " << intersection << std::endl;
+            return new Segment<T> (x1b, std::min(y1b,y2b), x2a, std::max(y1a,y2a));
         }
     }
-    return false;
+
+    return new NullShape<T> ();
 }
 
 

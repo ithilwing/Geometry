@@ -36,6 +36,7 @@
 		<Unit filename="include/Circle.h" />
 		<Unit filename="include/Line.h" />
 		<Unit filename="include/Segment.h" />
+		<Unit filename="include/Shape.h" />
 		<Unit filename="include/Tests.h" />
 		<Unit filename="include/Vector.h" />
 		<Unit filename="main.cpp" />

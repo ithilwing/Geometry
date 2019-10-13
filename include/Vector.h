@@ -4,9 +4,13 @@
 #include <iostream>
 #include <string>
 #include <math.h>
+#include "Shape.h"
+
+const double EPS = 1E-9;
 
 template <class T>
-class Vector {
+class Vector  : public Shape<T>
+{
     public:
         Vector();
         Vector(const T& new_x, const T& new_y);
@@ -29,6 +33,8 @@ class Vector {
 
         bool operator== (const Vector<T>& another) const;
         bool operator!= (const Vector<T>& another) const;
+
+        std::string toString() const;
 
 //        void printCoordinates ();
 
@@ -143,7 +149,7 @@ T Vector<T>::getScalarMult (const Vector<T>& another) const {
 
 template <class T>
 bool Vector<T>::operator== (const Vector<T>& another) const {
-    return (another.x == x && another.y == y);
+    return (std::abs(another.x-x)<EPS && std::abs(another.y-y)<EPS);
 }
 
 template <class T>
@@ -152,9 +158,14 @@ bool Vector<T>::operator!= (const Vector<T>& another) const {
 }
 
 template <class T>
+std::string Vector<T>::toString() const {
+    return "(" + std::to_string(x) + ", " + std::to_string(y) + ")";
+}
+
+/*template <class T>
 std::ostream& operator << (std::ostream& os, const Vector<T>& output) {
     os << "(" << output.getX() << ", " << output.getY() << ")" ;
     return os;
-}
+}*/
 
 #endif // VECTOR_H

@@ -1,8 +1,10 @@
 #ifndef  CIRCLE_H
 #define  CIRCLE_H
 
+#include "Shape.h"
+
 template <class T>
-class  Circle
+class  Circle : public Shape<T>
 {
     public:
         Circle();
