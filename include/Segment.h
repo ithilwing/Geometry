@@ -1,3 +1,6 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
+
 #ifndef SEGMENT_H
 #define SEGMENT_H
 
@@ -13,9 +16,9 @@ template <class T>
 class Segment : public Shape<T>
 {
     public:
-        Segment();
-        Segment (const Vector<T>& new_one, const Vector<T>& new_two);
-        Segment (const T& newx1, const T& newy1, const T& newy2, const T& newx2);
+        Segment(); //everything is zero: default constructor from Shape
+        Segment (const Vector<T>& new_one, const Vector<T>& new_two); //from 2 vectors
+        Segment (const T& newx1, const T& newy1, const T& newy2, const T& newx2); // from 4 coordinates
 
         T getOneX () const;
         T getOneY () const;
@@ -98,7 +101,8 @@ T Segment<T>::getLength () const {
 
 template <class T>
 bool Segment<T>::operator== (const Segment<T>& another) const {
-    return (another.one == one && another.two == two);
+    return (std::abs(another.one.getX() - one.getX())<EPS && std::abs(another.one.getY() - one.getY())<EPS &&
+            std::abs(another.two.getX() - two.getX())<EPS && std::abs(another.two.getY() - two.getY())<EPS);
 }
 
 template <class T>
@@ -109,6 +113,11 @@ bool le (const T& a, const T& b) { //a<=b
 template <class T>
 bool ge (const T& a, const T& b) { // a>=b
     return (a>b || std::abs(a-b)<EPS);
+}
+
+template <class T>
+bool eq (const T& a, const T& b) { // a==b
+    return (std::abs(a-b)<EPS);
 }
 
 template <class T>
@@ -126,7 +135,7 @@ Shape<T>* GetIntersection (const Segment<T>& a, const Segment<T>& b){
     T y2b = b.getTwoY();
 
     //set X-s in ascending order
-    if (x1a>=x2a) {
+    if (ge(x1a,x2a)) {
         T tmpx = x1a;
         x1a = x2a;
         x2a = tmpx;
@@ -136,7 +145,7 @@ Shape<T>* GetIntersection (const Segment<T>& a, const Segment<T>& b){
         y2a = tmpy;
     }
 
-    if (x1b>=x2b) {
+    if (ge(x1b,x2b)) {
         T tmpx = x1b;
         x1b = x2b;
         x2b = tmpx;
@@ -147,8 +156,8 @@ Shape<T>* GetIntersection (const Segment<T>& a, const Segment<T>& b){
     }
 
     //check if both segments are vertical
-    if (x2a == x1a && x2b == x1b) {
-        if (x1a != x1b) {
+    if (eq(x2a,x1a) && eq(x2b,x1b)) {
+        if (!eq(x1a,x1b)) {
             //std::cout << a << " and " << b << ": " << "No intersection" << std::endl;
             return new NullShape<T> ();
         } else {
@@ -157,7 +166,7 @@ Shape<T>* GetIntersection (const Segment<T>& a, const Segment<T>& b){
     }
 
     //check if 1st segment is vertical
-    if (x1a==x2a && x1b!=x2b) {
+    if (eq(x1a,x2a) && !eq(x1b,x2b)) {
         T Ab = (y2b-y1b)/(x2b-x1b);
         T Bb = y1b - Ab*x1b;
         T y = Ab*x1a + Bb;
@@ -174,7 +183,7 @@ Shape<T>* GetIntersection (const Segment<T>& a, const Segment<T>& b){
     }
 
     //check if 2nd segment is vertical
-    if (x1a!=x2a && x1b==x2b) {
+    if (!eq(x1a,x2a) && eq(x1b,x2b)) {
         T Aa = (y2a-y1a)/(x2a-x1a);
         T Ba = y1a - Aa*x1a;
         T y = Aa*x1b + Ba;
@@ -199,8 +208,8 @@ Shape<T>* GetIntersection (const Segment<T>& a, const Segment<T>& b){
     T Bb = y1b - Ab*x1b;
 
     //check if segments are parallel
-    if (Aa == Ab) {
-        if (Ba != Bb) {
+    if (eq(Aa,Ab)) {
+        if (!eq(Ba,Bb)) {
             //std::cout << a << " and " << b << ": " << "No intersection" << std::endl;
             return new NullShape<T> ();
         } else {
@@ -238,15 +247,15 @@ Shape<T>* CaseParallel (const Segment<T>& a, const Segment<T>& b) {
     if (std::max(y1a, y2a) < std::min(y1b, y2b) || std::max(y1b, y2b) < std::min(y1a, y2a)) {
         //std::cout << a << " and " << b << ": " << "No intersection" << std::endl;
         return new NullShape<T> ();
-    } else if (std::max(y1a, y2a) == std::min(y1b, y2b)) {
+    } else if (eq(std::max(y1a, y2a),std::min(y1b, y2b))) {
         //std::cout << a << " and " << b << ": " << "Intersection point: (" << x1a << ", " << std::max(y1a, y2a) << ")" << std::endl;
         return new Vector<T> (x1a,std::max(y1a, y2a));
-    } else if (std::max(y1b, y2b) == std::min(y1a, y2a)) {
+    } else if (eq(std::max(y1b, y2b),std::min(y1a, y2a))) {
         //std::cout << a << " and " << b << ": " << "Intersection point: (" << x1a << ", " << std::max(y1b, y2b) << ")" << std::endl;
         return new Vector<T> (x1a,std::max(y1b, y2b));
     }
-    if (a.getLength()>=b.getLength()) {
-        if (std::min(y1b, y2b) < std::max(y1a, y2a) && std::max(y1b,y2b) >= std::max(y1a, y2a)) {
+    if (ge(a.getLength(),b.getLength())) {
+        if (std::min(y1b, y2b) < std::max(y1a, y2a) && ge(std::max(y1b,y2b), std::max(y1a, y2a))) {
             //Segment<T> intersection(x1b, std::min(y1b,y2b), x2a, std::max(y1a,y2a));
             //std::cout << a << " and " << b << ": " << "Intersection segment: " << intersection << std::endl;
             return new Segment<T> (x1b, std::min(y1b,y2b), x2a, std::max(y1a,y2a));
@@ -254,13 +263,13 @@ Shape<T>* CaseParallel (const Segment<T>& a, const Segment<T>& b) {
             //Segment<T> intersection(x1b, std::min(y1b,y2b), x2b, std::max(y1b,y2b));
             //std::cout << a << " and " << b << ": " << "Intersection segment: " << intersection << std::endl;
             return new Segment<T> (x1b, std::min(y1b,y2b), x2b, std::max(y1b,y2b));
-        } else if (std::min(y1b,y2b)<=std::min(y1a,y2a) && std::max(y1b,y2b)>std::min(y1a,y2a)) {
+        } else if (le(std::min(y1b,y2b),std::min(y1a,y2a)) && std::max(y1b,y2b)>std::min(y1a,y2a)) {
             //Segment<T> intersection(x1a, std::min(y1a,y2a), x2b, std::max(y1b,y2b));
             //std::cout << a << " and " << b << ": " << "Intersection segment: " << intersection << std::endl;
             return new Segment<T> (x1a, std::min(y1a,y2a), x2b, std::max(y1b,y2b));
         }
     } else {
-        if (std::min(y1a, y2a) < std::max(y1b, y2b) && std::max(y1a,y2a) >= std::max(y1b, y2b)) {
+        if (std::min(y1a, y2a) < std::max(y1b, y2b) && ge(std::max(y1a,y2a), std::max(y1b, y2b))) {
             //Segment<T> intersection(x1a, std::min(y1a,y2a), x2b, std::max(y1b,y2b));
             //std::cout << a << " and " << b << ": " << "Intersection segment: " << intersection << std::endl;
             return new Segment<T> (x1a, std::min(y1a,y2a), x2b, std::max(y1b,y2b));
@@ -268,7 +277,7 @@ Shape<T>* CaseParallel (const Segment<T>& a, const Segment<T>& b) {
             //Segment<T> intersection(x1a, std::min(y1a,y2a), x2a, std::max(y1a,y2a));
             //std::cout << a << " and " << b << ": " << "Intersection segment: " << intersection << std::endl;
             return new Segment<T> (x1a, std::min(y1a,y2a), x2a, std::max(y1a,y2a));
-        } else if (std::min(y1a,y2a)<=std::min(y1b,y2b) && std::max(y1a,y2a)>std::min(y1b,y2b)) {
+        } else if (le(std::min(y1a,y2a), std::min(y1b,y2b)) && std::max(y1a,y2a)>std::min(y1b,y2b)) {
             //Segment<T> intersection(x1b, std::min(y1b,y2b), x2a, std::max(y1a,y2a));
             //std::cout << a << " and " << b << ": " << "Intersection segment: " << intersection << std::endl;
             return new Segment<T> (x1b, std::min(y1b,y2b), x2a, std::max(y1a,y2a));

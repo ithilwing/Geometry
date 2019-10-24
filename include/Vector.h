@@ -1,3 +1,6 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
+
 #ifndef VECTOR_H
 #define VECTOR_H
 
@@ -12,9 +15,9 @@ template <class T>
 class Vector  : public Shape<T>
 {
     public:
-        Vector();
-        Vector(const T& new_x, const T& new_y);
-        Vector(Vector<T> const& new_vector);
+        Vector(); //everything is zero: default constructor from Shape
+        Vector(const T& new_x, const T& new_y); // from 2 points
+        Vector(Vector<T> const& new_vector); // from another vector
 
         T getX() const;
         T getY() const;

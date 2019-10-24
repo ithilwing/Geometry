@@ -1,3 +1,6 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
+
 #ifndef TESTS_H
 #define TESTS_H
 
@@ -15,6 +18,7 @@ class Tests
         void TestVector ();
         void TestSegment ();
         void TestSegmentIntersection ();
+        void TestCirclesIntersection ();
 
 };
 
@@ -139,6 +143,25 @@ void Tests::TestSegmentIntersection() {
     assert((*dynamic_cast<Segment<double>*>(GetIntersection(eight,nine))) == Segment<double>(3,1,4.5,2)); //память освобожу позжу
 
     std::cout << "All tests on sector intersections passed successfully!" << std::endl;
+}
+
+void Tests::TestCirclesIntersection() {
+    Circle<double> one (0,0,2);
+    Circle<double> two (1,0,1);
+    Circle<double> three (4,4,sqrt(2));
+    Circle<double> four (0,3,1);
+    Circle<double> five (3,1,sqrt(2));
+
+    assert((*dynamic_cast<NullShape<double>*>(GetIntersection(one,three))) == NullShape<double>());
+    assert((*dynamic_cast<NullShape<double>*>(GetIntersection(four,five))) == NullShape<double>());
+    assert((*dynamic_cast<Vector<double>*>(GetIntersection(four,one))) == Vector<double>(0,2));
+    assert((*dynamic_cast<Vector<double>*>(GetIntersection(two,one))) == Vector<double>(2,0));
+    assert((*dynamic_cast<Segment<double>*>(GetIntersection(one,five))) == Segment<double>(2,0,1.6,1.2) ||
+           (*dynamic_cast<Segment<double>*>(GetIntersection(one,five))) == Segment<double>(1.6,1.2,2,0));
+    assert((*dynamic_cast<Segment<double>*>(GetIntersection(two,five))) == Segment<double>(2,0,1.6,0.8) ||
+           (*dynamic_cast<Segment<double>*>(GetIntersection(two,five))) == Segment<double>(1.6,0.8,2,0));
+
+    std::cout << "All tests on circle intersections passed successfully!" << std::endl;
 
 }
 
